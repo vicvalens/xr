@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>Example 02 – XR Video + Hands</title>
+    <title>Example 02 – XR Grabbable Video Screen</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
 
     <!-- A-Frame 1.7.x -->
@@ -32,8 +32,6 @@
           id="demo-video"
           src="video.mp4"
           loop="true"
-          autoplay="true"
-          muted="true"
           playsinline
           webkit-playsinline
           crossorigin="anonymous"
@@ -56,18 +54,20 @@
       <!-- CAMERA  -->
       <a-entity camera position="0 1.6 0"></a-entity>
 
-      <!-- FLOATING VIDEO SCREEN IN FRONT OF THE USER -->
+      <!-- GRABBABLE VIDEO SCREEN IN FRONT OF THE USER -->
       <a-video
         id="video-screen"
+        grabbable
         src="#demo-video"
         position="0 1.4 -1.6"
         width="1.6"
         height="0.9"
+        shadow="cast: true; receive: false"
       ></a-video>
 
       <!-- SIMPLE TEXT LABEL ABOVE THE VIDEO -->
       <a-text
-        value="Video Title."
+        value="VIdeo Title."
         position="0 2.0 -1.8"
         align="center"
         width="2.5"
@@ -80,14 +80,42 @@
     </a-scene>
 
     <script>
-      window.addEventListener('click', () => {
-        const video = document.querySelector('#demo-video');
-        if (video && video.muted) {
-          video.muted = false;
-          video.play().catch(err => console.warn('Could not play video with sound:', err));
-        }
-      }, { once: true });
+      const scene    = document.querySelector('a-scene');
+      const video    = document.querySelector('#demo-video');
+      const leftHand = document.querySelector('#leftHand');
+      const rightHand = document.querySelector('#rightHand');
+
+      let audioEnabled = false;
+      let videoStarted = false;
+
+      // Try to start the video (muted) when entering immersive mode (AR).
+      scene.addEventListener('enter-vr', () => {
+        if (!video || videoStarted) return;
+        video.muted = true;
+        video.play().then(() => {
+          videoStarted = true;
+          console.log('Video started muted on enter-vr/AR');
+        }).catch(err => {
+          console.warn('Could not autoplay muted video:', err);
+        });
+      });
+
+      function enableVideoAudioOnce () {
+        if (!video || !videoStarted || audioEnabled) return;
+        video.muted = false;
+        video.play().then(() => {
+          audioEnabled = true;
+          console.log('Video audio enabled via pinch gesture');
+        }).catch(err => {
+          console.warn('Could not play video with sound:', err);
+        });
+      }
+
+      // Use pinch gesture from either hand as the "play sound" gesture
+      [leftHand, rightHand].forEach(hand => {
+        if (!hand) return;
+        hand.addEventListener('pinchstarted', enableVideoAudioOnce);
+      });
     </script>
-    -->
   </body>
 </html>
