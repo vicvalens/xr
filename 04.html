@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <title>AR + manos + GLB</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+
+    <!-- A-Frame 1.7.x -->
+    <script src="https://aframe.io/releases/1.7.1/aframe.min.js"></script>
+
+    <style>
+      html, body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background: transparent; /* deja ver la cámara (passthrough) */
+      }
+    </style>
+  </head>
+
+  <body>
+    <a-scene
+      renderer="alpha: true; physicallyCorrectLights: true; colorManagement: true"
+      webxr="optionalFeatures: hit-test, hand-tracking;"
+      xr-mode-ui="XRMode: ar; enterAREnabled: true; enterVREnabled: false"
+      vr-mode-ui="enabled: false"
+      embedded
+    >
+      <!-- Assets: GLB Model -->
+      <a-assets>
+        <!-- Cambia la ruta a tu propio archivo GLB -->
+        <a-asset-item id="modelo-glb" src="flecha.glb"></a-asset-item>
+      </a-assets>
+
+      <!-- Hands: left and right -->
+      <a-entity
+        id="leftHand"
+        hand-tracking-controls="hand: left"
+        hand-tracking-grab-controls="hand: left"
+      ></a-entity>
+
+      <a-entity
+        id="rightHand"
+        hand-tracking-controls="hand: right"
+        hand-tracking-grab-controls="hand: right"
+      ></a-entity>
+
+      <!-- OBJECT 1: grabbable cube -->
+      <a-box
+        grabbable
+        position="-0.3 1.1 -0.8"
+        depth="0.25"
+        height="0.25"
+        width="0.25"
+        color="#FF4444"
+        shadow="cast: true; receive: false"
+      ></a-box>
+
+      <!-- OBJECT 2: grabbable glb model -->
+      <a-gltf-model
+        grabbable
+        src="#modelo-glb"
+        position="0.3 1.0 -0.9"
+        scale="0.2 0.2 0.2"
+        shadow="cast: true; receive: false"
+      ></a-gltf-model>
+
+      <!-- Lights -->
+      <a-entity light="type: directional; intensity: 1" position="1 3 2"></a-entity>
+      <a-entity light="type: ambient; intensity: 0.4"></a-entity>
+    </a-scene>
+  </body>
+</html>
