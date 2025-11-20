@@ -59,18 +59,18 @@
         id="video-screen"
         grabbable
         src="#demo-video"
-        position="0 1.4 -1.6"
-        width="1.6"
-        height="0.9"
+        position="0 1.4 -1.0"
+        width="0.9"
+        height="0.5"
         shadow="cast: true; receive: false"
       ></a-video>
 
-      <!-- SIMPLE TEXT LABEL ABOVE THE VIDEO -->
+      <!-- SIMPLE TEXT LABEL ABOVE THE VIDEO (aligned with new distance) -->
       <a-text
-        value="VIdeo Title."
-        position="0 2.0 -1.8"
+        value="Video Title"
+        position="0 1.9 -1.0"
         align="center"
-        width="2.5"
+        width="1.5"
         color="#ffffff">
       </a-text>
 
@@ -80,9 +80,9 @@
     </a-scene>
 
     <script>
-      const scene    = document.querySelector('a-scene');
-      const video    = document.querySelector('#demo-video');
-      const leftHand = document.querySelector('#leftHand');
+      const scene     = document.querySelector('a-scene');
+      const video     = document.querySelector('#demo-video');
+      const leftHand  = document.querySelector('#leftHand');
       const rightHand = document.querySelector('#rightHand');
 
       let audioEnabled = false;
