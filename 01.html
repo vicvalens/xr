@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Example 01 – Multiple XR Models</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+
+    <!-- A-Frame -->
+    <script src="https://aframe.io/releases/1.7.1/aframe.min.js"></script>
+
+    <style>
+      html, body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background: transparent;
+      }
+    </style>
+  </head>
+
+  <body>
+    <a-scene
+      renderer="alpha: true; physicallyCorrectLights: true; colorManagement: true"
+      webxr="optionalFeatures: hit-test, hand-tracking;"
+      xr-mode-ui="XRMode: ar; enterAREnabled: true; enterVREnabled: false"
+      vr-mode-ui="enabled: false"
+      embedded
+    >
+      <!-- ASSETS: STUDENT – replace these GLBs with your own models -->
+      <a-assets>
+        <a-asset-item id="model-1" src="../models/model1.glb"></a-asset-item>
+        <a-asset-item id="model-2" src="../models/model2.glb"></a-asset-item>
+        <a-asset-item id="model-3" src="../models/model3.glb"></a-asset-item>
+      </a-assets>
+
+      <!-- HANDS -->
+      <a-entity
+        id="leftHand"
+        hand-tracking-controls="hand: left"
+        hand-tracking-grab-controls="hand: left"
+      ></a-entity>
+
+      <a-entity
+        id="rightHand"
+        hand-tracking-controls="hand: right"
+        hand-tracking-grab-controls="hand: right"
+      ></a-entity>
+
+      <!-- 3D MODELS (grabbable) -->
+      <!-- STUDENT: adjust position/scale for each model -->
+      <a-gltf-model
+        grabbable
+        src="#model-1"
+        position="-0.6 1.0 -1.1"
+        scale="0.25 0.25 0.25"
+        shadow="cast: true; receive: false"
+      ></a-gltf-model>
+
+      <a-gltf-model
+        grabbable
+        src="#model-2"
+        position="0 1.0 -1.3"
+        scale="0.25 0.25 0.25"
+        shadow="cast: true; receive: false"
+      ></a-gltf-model>
+
+      <a-gltf-model
+        grabbable
+        src="#model-3"
+        position="0.6 1.0 -1.1"
+        scale="0.25 0.25 0.25"
+        shadow="cast: true; receive: false"
+      ></a-gltf-model>
+
+      <!-- LIGHTS -->
+      <a-entity light="type: directional; intensity: 1" position="1 3 2"></a-entity>
+      <a-entity light="type: ambient; intensity: 0.4"></a-entity>
+    </a-scene>
+  </body>
+</html>
