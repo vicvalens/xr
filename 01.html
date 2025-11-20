@@ -2,10 +2,10 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>Example 01 – Multiple XR Models</title>
+    <title>Example 01 – Basic XR Shapes (grabbable)</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
 
-    <!-- A-Frame -->
+    <!-- A-Frame 1.7.x -->
     <script src="https://aframe.io/releases/1.7.1/aframe.min.js"></script>
 
     <style>
@@ -13,7 +13,7 @@
         margin: 0;
         padding: 0;
         overflow: hidden;
-        background: transparent;
+        background: transparent; /* show passthrough camera */
       }
     </style>
   </head>
@@ -26,14 +26,7 @@
       vr-mode-ui="enabled: false"
       embedded
     >
-      <!-- ASSETS: Replace these GLBs with your own models -->
-      <a-assets>
-        <a-asset-item id="model-1" src="../models/model1.glb"></a-asset-item>
-        <a-asset-item id="model-2" src="../models/model2.glb"></a-asset-item>
-        <a-asset-item id="model-3" src="../models/model3.glb"></a-asset-item>
-      </a-assets>
-
-      <!-- HANDS -->
+      <!-- HANDS: left and right -->
       <a-entity
         id="leftHand"
         hand-tracking-controls="hand: left"
@@ -46,31 +39,36 @@
         hand-tracking-grab-controls="hand: right"
       ></a-entity>
 
-      <!-- 3D MODELS (grabbable) -->
-      <!-- Adjust position/scale for each model -->
-      <a-gltf-model
+      <!-- OBJECT 1: grabbable cube -->
+      <a-box
         grabbable
-        src="#model-1"
-        position="-0.6 1.0 -1.1"
-        scale="0.25 0.25 0.25"
+        position="-0.4 1.1 -0.9"
+        depth="0.25"
+        height="0.25"
+        width="0.25"
+        color="#FF4444"
         shadow="cast: true; receive: false"
-      ></a-gltf-model>
+      ></a-box>
 
-      <a-gltf-model
+      <!-- OBJECT 2: grabbable sphere -->
+      <a-sphere
         grabbable
-        src="#model-2"
-        position="0 1.0 -1.3"
-        scale="0.25 0.25 0.25"
+        position="0 1.1 -1.0"
+        radius="0.18"
+        color="#44FFAA"
         shadow="cast: true; receive: false"
-      ></a-gltf-model>
+      ></a-sphere>
 
-      <a-gltf-model
+      <!-- OBJECT 3: grabbable plane -->
+      <a-plane
         grabbable
-        src="#model-3"
-        position="0.6 1.0 -1.1"
-        scale="0.25 0.25 0.25"
+        position="0.4 1.1 -0.9"
+        rotation="0 0 0"
+        width="0.35"
+        height="0.25"
+        color="#4477FF"
         shadow="cast: true; receive: false"
-      ></a-gltf-model>
+      ></a-plane>
 
       <!-- LIGHTS -->
       <a-entity light="type: directional; intensity: 1" position="1 3 2"></a-entity>
