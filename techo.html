@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <title>Habitáculo Aceite</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+
+    <!-- A-Frame 1.7.x -->
+    <script src="https://aframe.io/releases/1.7.1/aframe.min.js"></script>
+    <!-- movement-controls (teclado + gamepad + VR controllers) -->
+    <script src="https://cdn.jsdelivr.net/npm/aframe-extras@6.1.1/dist/aframe-extras.min.js"></script>
+
+    <style>
+      html, body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: transparent; /* importante para passthrough */
+      }
+      a-scene {
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+
+    <script>
+      // Reemplaza las texturas originales del GLB que tengan poster01.jpg o poster02.jpg
+      // por las texturas del repositorio (las <img> de A-Frame).
+      AFRAME.registerComponent('posters-from-repo', {
+        schema: {
+          poster01: { type: 'selector' }, // <img id="poster01">
+          poster02: { type: 'selector' }  // <img id="poster02">
+        },
+        init: function () {
+          const el = this.el;
+          const data = this.data;
+
+          el.addEventListener('model-loaded', () => {
+            const mesh = el.getObject3D('mesh');
+            if (!mesh) return;
+
+            const loader = new AFRAME.THREE.TextureLoader();
+            let tex01 = null;
+            let tex02 = null;
+
+            if (data.poster01) {
+              const url01 = data.poster01.getAttribute('src');
+              tex01 = loader.load(url01);
+              tex01.encoding = AFRAME.THREE.sRGBEncoding;
+            }
+            if (data.poster02) {
+              const url02 = data.poster02.getAttribute('src');
+              tex02 = loader.load(url02);
+              tex02.encoding = AFRAME.THREE.sRGBEncoding;
+            }
+
+            function maybeReplace(mat) {
+              if (!mat || !mat.map || !mat.map.image) return;
+
+              const img = mat.map.image;
+              let src = '';
+
+              // Intentamos obtener el nombre/ruta original de la textura
+              if (img.currentSrc) src = img.currentSrc;
+              else if (img.src) src = img.src;
+
+              src = src.toLowerCase();
+
+              // Si en el GLB la textura original se llama poster01.jpg o poster02.jpg,
+              // la sustituimos por la del repositorio.
+              if (tex01 && src.includes('poster01')) {
+                mat.map = tex01;
+                mat.needsUpdate = true;
+              } else if (tex02 && src.includes('poster02')) {
+                mat.map = tex02;
+                mat.needsUpdate = true;
+              }
+            }
+
+            mesh.traverse((node) => {
+              if (!node.isMesh || !node.material) return;
+
+              if (Array.isArray(node.material)) {
+                node.material.forEach(maybeReplace);
+              } else {
+                maybeReplace(node.material);
+              }
+            });
+          });
+        }
+      });
+    </script>
+  </head>
+
+  <body>
+    <a-scene
+      renderer="alpha: true; physicallyCorrectLights: true; colorManagement: true"
+      webxr="optionalFeatures: hit-test, hand-tracking;"
+      xr-mode-ui="XRMode: ar; enterAREnabled: true; enterVREnabled: false"
+      vr-mode-ui="enabled: false"
+      embedded
+    >
+      <!-- ASSETS -->
+      <a-assets>
+        <!-- Texturas desde el repositorio / carpeta del proyecto -->
+        <img id="poster01" src="poster01.jpg">
+        <img id="poster02" src="poster02.jpg">
+
+        <!-- Modelo con mamparas + contenedor -->
+        <a-asset-item id="aceite" src="techo.glb"></a-asset-item>
+      </a-assets>
+
+      <!-- RIG: se mueve con teclado (PC) y joysticks (visores) -->
+      <a-entity id="rig" movement-controls="speed: 1.0">
+        <!-- Cámara del usuario -->
+        <a-entity
+          id="camera"
+          camera
+          position="0 1.6 0"
+          look-controls
+        ></a-entity>
+
+        <!-- Manos XR (hand-tracking) -->
+        <a-entity hand-tracking-controls="hand: left"></a-entity>
+        <a-entity hand-tracking-controls="hand: right"></a-entity>
+      </a-entity>
+
+      <!-- MODELO COMPLETO: mamparas + contenedor -->
+      <a-entity
+        id="escenaAceite"
+        gltf-model="#aceite"
+        posters-from-repo="poster01: #poster01; poster02: #poster02"
+        position="0 0 -1.8"
+        rotation="0 0 0"
+        scale="1 1 1">
+      </a-entity>
+
+      <!-- LUCES -->
+      <a-entity light="type: directional; intensity: 1.3" position="1 3 2"></a-entity>
+      <a-entity light="type: ambient; intensity: 0.4"></a-entity>
+    </a-scene>
+  </body>
+</html>
